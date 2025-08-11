@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgur6njf0e7fu"]
+
+[ext_resource type="Script" uid="uid://bt2qeaubb110c" path="res://scripts/systems/main_menu.gd" id="1_7vrkn"]
+[ext_resource type="Texture2D" uid="uid://cc7d0o5pk6gre" path="res://assets/art/menuBG.png" id="2_fu7sn"]
+[ext_resource type="Texture2D" uid="uid://eyihc2xm1kqj" path="res://assets/art/logo_trns.png" id="3_fu7sn"]
+[ext_resource type="Theme" uid="uid://dcxmahd03hv1d" path="res://assets/themes/main_menu.tres" id="4_jix8l"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7vrkn")
+
+[node name="menuBG" type="TextureRect" parent="."]
+modulate = Color(1, 0, 0.462745, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -63.0
+offset_right = -5.0
+offset_bottom = 313.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.05, 1.05)
+texture = ExtResource("2_fu7sn")
+
+[node name="menu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -133.0
+offset_top = -245.0
+offset_right = 133.0
+offset_bottom = 245.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="logo" type="TextureRect" parent="menu"]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture = ExtResource("3_fu7sn")
+expand_mode = 2
+
+[node name="firststart" type="Button" parent="menu"]
+layout_mode = 2
+theme = ExtResource("4_jix8l")
+text = "Begin Your Reign"
+
+[node name="continue" type="Button" parent="menu"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_jix8l")
+text = "Continue Reign"
+
+[node name="options" type="Button" parent="menu"]
+layout_mode = 2
+theme = ExtResource("4_jix8l")
+text = "Options"
+
+[node name="quit" type="Button" parent="menu"]
+layout_mode = 2
+theme = ExtResource("4_jix8l")
+text = "Exit Game"
+
+[connection signal="pressed" from="menu/firststart" to="." method="_on_firststart_pressed"]
+[connection signal="pressed" from="menu/continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="menu/options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="menu/quit" to="." method="_on_quit_pressed"]

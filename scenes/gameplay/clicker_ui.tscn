@@ -1,0 +1,321 @@
+[gd_scene load_steps=6 format=3 uid="uid://c3fq8gnx7a6nn"]
+
+[ext_resource type="Script" uid="uid://bsk2tj0ye2i7s" path="res://scripts/gameplay/clicker_ui.gd" id="1_iotqg"]
+[ext_resource type="Texture2D" uid="uid://dnupkwfgld23i" path="res://assets/art/throne_pixel_128.png" id="2_pis8j"]
+[ext_resource type="Texture2D" uid="uid://ihoa8bhl0dwm" path="res://assets/art/icons/cog.png" id="3_3utru"]
+[ext_resource type="PackedScene" uid="uid://dix3cxbn03nyf" path="res://scenes/gameplay/bsshop.tscn" id="4_pis8j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6y3y"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.283311, 0.0391182, 0.00955772, 1)
+
+[node name="ClickerUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iotqg")
+
+[node name="bg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.323498, 4.00688e-06, 0.226307, 1)
+
+[node name="clicker" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -86.0
+offset_top = -330.0
+offset_right = 86.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="authoritylabel" type="Label" parent="clicker"]
+layout_mode = 2
+text = "Authority: 0"
+horizontal_alignment = 3
+
+[node name="getauthority" type="TextureButton" parent="clicker"]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+texture_normal = ExtResource("2_pis8j")
+texture_pressed = ExtResource("2_pis8j")
+texture_hover = ExtResource("2_pis8j")
+texture_disabled = ExtResource("2_pis8j")
+texture_focused = ExtResource("2_pis8j")
+stretch_mode = 0
+
+[node name="holdtoclick" type="Timer" parent="clicker/getauthority"]
+wait_time = 0.25
+
+[node name="idleincome" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -549.0
+offset_bottom = 97.0
+grow_horizontal = 0
+
+[node name="passivedisplay" type="HBoxContainer" parent="idleincome"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -253.0
+offset_bottom = 45.0
+grow_horizontal = 0
+alignment = 1
+
+[node name="passivelabel" type="RichTextLabel" parent="idleincome/passivedisplay"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "Passive Authority: +0/s"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="passivebar" type="ProgressBar" parent="idleincome/passivedisplay"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+max_value = 1.0
+show_percentage = false
+
+[node name="passivetimer" type="Timer" parent="idleincome"]
+autostart = true
+
+[node name="awaypopup" type="PopupPanel" parent="idleincome"]
+initial_position = 2
+size = Vector2i(350, 100)
+
+[node name="awaylabel" type="RichTextLabel" parent="idleincome/awaypopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 346.0
+offset_bottom = 96.0
+text = "tretrwttrtwtwrt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="upgrades" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="upgradelabel" type="Label" parent="upgrades"]
+layout_mode = 2
+text = "Upgrades"
+horizontal_alignment = 1
+
+[node name="upgradeclick" type="Button" parent="upgrades"]
+layout_mode = 2
+tooltip_text = "+1 to Authority gain per click."
+text = "Tighten Grip - Lv. 0
+(Cost: 10 Authority)"
+
+[node name="upgradepassive" type="Button" parent="upgrades"]
+layout_mode = 2
+tooltip_text = "+3 Authority per second."
+text = "Hire Enforcers - Lv. 0
+(Cost: 50 Authority)"
+
+[node name="upgradeclick2" type="Button" parent="upgrades"]
+visible = false
+layout_mode = 2
+tooltip_text = "+10 to Authority gain per click."
+text = "Break Their Will - Lv. 0
+(Cost: 500 Authority)"
+
+[node name="upgradepassive2" type="Button" parent="upgrades"]
+layout_mode = 2
+tooltip_text = "Multiplies passive income by 2."
+text = "Mandate Loyalty - Lv. 0
+(Cost: 300 Authority)"
+
+[node name="upgradecritchance" type="Button" parent="upgrades"]
+visible = false
+layout_mode = 2
+tooltip_text = "Increases Crit Chance by 2%."
+
+[node name="upgradecritmult" type="Button" parent="upgrades"]
+visible = false
+layout_mode = 2
+tooltip_text = "Increases Crit Mult by 1."
+
+[node name="navigation" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 144.0
+grow_vertical = 0
+
+[node name="backtomenu" type="Button" parent="navigation"]
+layout_mode = 2
+text = "Back to Menu"
+
+[node name="gotooptions" type="TextureButton" parent="navigation"]
+layout_mode = 2
+texture_normal = ExtResource("3_3utru")
+texture_pressed = ExtResource("3_3utru")
+texture_hover = ExtResource("3_3utru")
+texture_disabled = ExtResource("3_3utru")
+texture_focused = ExtResource("3_3utru")
+
+[node name="statdisplay" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -175.0
+offset_right = 250.0
+offset_bottom = 75.0
+grow_vertical = 2
+
+[node name="margin" type="MarginContainer" parent="statdisplay"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="statslabel" type="RichTextLabel" parent="statdisplay/margin"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Stats:
+"
+fit_content = true
+
+[node name="bloodline" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="bsstrength" type="Label" parent="bloodline"]
+visible = false
+layout_mode = 2
+text = "Bloodline Strength: 0"
+
+[node name="bsbutton" type="Button" parent="bloodline"]
+visible = false
+layout_mode = 2
+text = "Bloodline Perks"
+
+[node name="abdicate" type="Button" parent="bloodline"]
+visible = false
+layout_mode = 2
+text = "Abdicate"
+
+[node name="bsshoppanel" type="PopupPanel" parent="bloodline"]
+title = "Bloodline Strength Shop"
+initial_position = 2
+size = Vector2i(800, 700)
+min_size = Vector2i(800, 700)
+theme_override_styles/panel = SubResource("StyleBoxFlat_w6y3y")
+
+[node name="bsshop" parent="bloodline/bsshoppanel" instance=ExtResource("4_pis8j")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 790.0
+offset_bottom = 690.0
+
+[node name="abdicateconfirm" type="ConfirmationDialog" parent="bloodline"]
+ok_button_text = "Yes, it's time to move on."
+dialog_text = "Abdicating allows your heir to inherit your kingdom. They will have to start from the beginning, but hopefully your influence will live on to help."
+cancel_button_text = "No, I'm not ready."
+
+[node name="cheat" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 315.0
+offset_top = 387.0
+offset_right = 390.0
+offset_bottom = 427.0
+text = "CHEAT"
+
+[node name="rumours" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="rumourslabel" type="RichTextLabel" parent="rumours"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -285.5
+offset_right = 285.5
+offset_bottom = 114.0
+grow_horizontal = 2
+bbcode_enabled = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="rumourstimer" type="Timer" parent="rumours"]
+wait_time = 8.0
+
+[node name="typewritertimer" type="Timer" parent="rumours"]
+wait_time = 0.065
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1147.0
+offset_top = 987.0
+offset_right = 1291.0
+offset_bottom = 1019.0
+text = "<--click me pls"
+
+[connection signal="button_down" from="clicker/getauthority" to="." method="_on_getauthority_button_down"]
+[connection signal="button_up" from="clicker/getauthority" to="." method="_on_getauthority_button_up"]
+[connection signal="pressed" from="clicker/getauthority" to="." method="_on_getauthority_pressed"]
+[connection signal="timeout" from="clicker/getauthority/holdtoclick" to="." method="_on_holdtoclick_timeout"]
+[connection signal="timeout" from="idleincome/passivetimer" to="." method="_on_passivetimer_timeout"]
+[connection signal="close_requested" from="idleincome/awaypopup" to="." method="_on_awaypopup_close_requested"]
+[connection signal="pressed" from="upgrades/upgradeclick" to="." method="_on_upgradeclick_pressed"]
+[connection signal="pressed" from="upgrades/upgradepassive" to="." method="_on_upgradepassive_pressed"]
+[connection signal="pressed" from="upgrades/upgradeclick2" to="." method="_on_upgradeclick_2_pressed"]
+[connection signal="pressed" from="upgrades/upgradepassive2" to="." method="_on_upgradepassive_2_pressed"]
+[connection signal="pressed" from="upgrades/upgradecritchance" to="." method="_on_upgradecritchance_pressed"]
+[connection signal="pressed" from="upgrades/upgradecritmult" to="." method="_on_upgradecritmult_pressed"]
+[connection signal="pressed" from="navigation/backtomenu" to="." method="_on_backtomenu_pressed"]
+[connection signal="pressed" from="navigation/gotooptions" to="." method="_on_gotooptions_pressed"]
+[connection signal="pressed" from="bloodline/bsbutton" to="." method="_on_bsbutton_pressed"]
+[connection signal="pressed" from="bloodline/abdicate" to="." method="_on_abdicate_pressed"]
+[connection signal="confirmed" from="bloodline/abdicateconfirm" to="." method="_on_abdicateconfirm_confirmed"]
+[connection signal="pressed" from="cheat" to="." method="_on_cheat_pressed"]
+[connection signal="timeout" from="rumours/rumourstimer" to="." method="cycle_rumour"]
+[connection signal="timeout" from="rumours/typewritertimer" to="." method="_on_typewriter_timer_timeout"]
