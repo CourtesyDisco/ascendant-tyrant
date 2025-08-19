@@ -103,10 +103,7 @@ texture_disabled = ExtResource("8_08q51")
 layout_mode = 2
 theme_override_font_sizes/font_size = 9
 text = "Raise your levies.
-(Unlocks Expansion and Troops)
-(NOT IMPLEMENTED YET,
-THIS IS ESSENTIALLY
-COMPLETION <3)
+(Unlocks Expansion)
 (Costs 100 Bloodline Strength)"
 
 [node name="Panel" type="Panel" parent="."]
@@ -126,3 +123,4 @@ These perks are reset on the second prestige layer - Legacy, which will be imple
 [connection signal="pressed" from="tiers/t1panel/t1/p1" to="." method="_on_p_1_pressed"]
 [connection signal="pressed" from="tiers/t2panel/t2/p2" to="." method="_on_p_2_pressed"]
 [connection signal="pressed" from="tiers/t2panel/t2/p3" to="." method="_on_p_3_pressed"]
+[connection signal="pressed" from="tiers/t3panel/t3/p4" to="." method="_on_p_4_pressed"]

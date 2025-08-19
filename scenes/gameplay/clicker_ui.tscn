@@ -252,8 +252,12 @@ ok_button_text = "Yes, it's time to move on."
 dialog_text = "Abdicating allows your heir to inherit your kingdom. They will have to start from the beginning, but hopefully your influence will live on to help."
 cancel_button_text = "No, I'm not ready."
 
-[node name="cheat" type="Button" parent="."]
+[node name="expansion" type="Button" parent="bloodline"]
 visible = false
+layout_mode = 2
+text = "Go to Expansion"
+
+[node name="cheat" type="Button" parent="."]
 layout_mode = 0
 offset_left = 315.0
 offset_top = 387.0
@@ -316,6 +320,7 @@ text = "<--click me pls"
 [connection signal="pressed" from="bloodline/bsbutton" to="." method="_on_bsbutton_pressed"]
 [connection signal="pressed" from="bloodline/abdicate" to="." method="_on_abdicate_pressed"]
 [connection signal="confirmed" from="bloodline/abdicateconfirm" to="." method="_on_abdicateconfirm_confirmed"]
+[connection signal="pressed" from="bloodline/expansion" to="." method="_on_expansion_pressed"]
 [connection signal="pressed" from="cheat" to="." method="_on_cheat_pressed"]
 [connection signal="timeout" from="rumours/rumourstimer" to="." method="cycle_rumour"]
 [connection signal="timeout" from="rumours/typewritertimer" to="." method="_on_typewriter_timer_timeout"]

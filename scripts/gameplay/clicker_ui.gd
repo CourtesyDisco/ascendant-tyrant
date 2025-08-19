@@ -65,6 +65,7 @@ var typewriter_index = 0
 @onready var abdicate: Button = $bloodline/abdicate
 @onready var bsstrength: Label = $bloodline/bsstrength
 @onready var bsshoppanel: PopupPanel = $bloodline/bsshoppanel
+@onready var expansion: Button = $bloodline/expansion
 
 
 # Called when the node enters the scene tree for the first time.
@@ -99,7 +100,7 @@ func _ready() -> void:
 	load_rumours()
 	cycle_rumour()
 	$rumours/rumourstimer.start()
-
+	Global.start_run_timer()
 	# first run ever? start the clock and clear the flag (both global and local)
 	if Global.first_time:
 		Global.first_time = false
@@ -175,6 +176,8 @@ func update_ui():
 		bsstrength.visible = true
 	if lifetime_authority >= 100000:
 		abdicate.visible = true
+	if Global.bs_perk4:
+		expansion.visible = true
 		
 	_refresh_button_states()
 		
@@ -185,11 +188,11 @@ func update_stats_display():
 	if Global.bs_perk3:
 		display_click += 100
 	if Global.bs_perk1:
-		display_click *= Global.total_bloodline_strength
+		display_click *= Global.get_bloodline_mult()
 	
 	var display_passive = passive_income * passive_mult
 	if Global.bs_perk1:
-		display_passive *= Global.total_bloodline_strength
+		display_passive *= Global.get_bloodline_mult()
 	if Global.bs_perk2:
 		display_passive *= 4
 		
@@ -198,11 +201,12 @@ func update_stats_display():
 		passive_text += " (Idle)"
 	$statdisplay/margin/statslabel.text = """
 [b]Stats:[/b]
-Authority per click: [color=yellow]%d[/color]
+Auth per click: [color=yellow]%d[/color]
 Crit Chance: [color=yellow]%.2f%%[/color]
-Crit Multiplier: [color=yellow]%d[/color]
-Lifetime Authority: [color=yellow]%d[/color]
-""" % [display_click, crit_chance * 100.0, crit_mult, lifetime_authority]
+Crit Mult: [color=yellow]%d[/color]
+Lifetime Auth: [color=yellow]%d[/color]
+Total BL Strength: [color=red]%d[/color]
+""" % [display_click, crit_chance * 100.0, crit_mult, lifetime_authority, Global.total_bloodline_strength]
 
 	authoritylabel.text = "Authority: " + Numberformatter.format(authority)
 	passivelabel.text = passive_text
@@ -312,7 +316,7 @@ func _stamp_last_active() -> void:
 func calculate_away_income(elapsed: int):
 	var income = elapsed * passive_income * passive_mult * 0.5
 	if Global.bs_perk1:
-		income *= Global.total_bloodline_strength
+		income *= Global.get_bloodline_mult()
 	if Global.bs_perk2:
 		income *= 4
 	return int(income)
@@ -333,6 +337,8 @@ func away() -> void:
 	var income: int = calculate_away_income(elapsed_i)
 	authority += income
 	lifetime_authority += income
+	Global.stat_set_max("max_authority_run", authority)
+	Global.maybe_mark_fastest_1k(authority)
 	_sync_core()
 	SaveManager.save_soon()
 
@@ -369,15 +375,17 @@ func _on_getauthority_pressed() -> void:
 
 	# Perk 1 global mult
 	if Global.bs_perk1:
-		gain *= Global.total_bloodline_strength
+		gain *= Global.get_bloodline_mult()
 
 	authority += gain
 	lifetime_authority += gain
-
+	Global.stat_set_max("max_authority_run", authority)
+	Global.maybe_mark_fastest_1k(authority)
 	# stats
 	Global.stat_add("clicks", 1)
 	if crit:
 		Global.stat_add("crit_clicks", 1)
+		Global.stat_set_max("largest_crit", gain)
 	Global.stat_add("authority_total", gain)
 	Global.stat_add("authority_from_clicks", gain)
 	Global.stat_set_max("highest_click", gain)
@@ -406,7 +414,7 @@ func _on_passivetimer_timeout():
 
 		# Perk 1: global multiplier
 		if Global.bs_perk1:
-			income *= Global.total_bloodline_strength
+			income *= Global.get_bloodline_mult()
 
 		# Perk 2: 4x passive; can crit if idle >= 30s
 		if Global.bs_perk2:
@@ -423,7 +431,8 @@ func _on_passivetimer_timeout():
 
 		authority += income_i
 		lifetime_authority += income_i
-
+		Global.stat_set_max("max_authority_run", authority)
+		Global.maybe_mark_fastest_1k(authority)
 		# stats
 		Global.stat_add("authority_total", income_i)
 		Global.stat_add("authority_from_passive", income_i)
@@ -466,6 +475,8 @@ func _on_upgradeclick_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
 	if authority >= upgrade_click_cost:
 		authority -= upgrade_click_cost
+		Global.stat_add("authority_spent", upgrade_click_cost)
+
 		auth_per_click += 1
 		upgrade_click_level += 1
 		upgrade_click_cost = _bump_cost(upgrade_click_cost, 1.30)
@@ -475,71 +486,87 @@ func _on_upgradeclick_pressed() -> void:
 		_sync_core()
 		SaveManager.save_soon()
 
+
 func _on_upgradepassive_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
 	if authority >= upgrade_passive_cost:
 		authority -= upgrade_passive_cost
+		Global.stat_add("authority_spent", upgrade_passive_cost)
+
 		passive_income += 3
 		upgrade_passive_level += 1
-		upgrade_passive_cost    = _bump_cost(upgrade_passive_cost, 1.30)
+		upgrade_passive_cost = _bump_cost(upgrade_passive_cost, 1.30)
 		Global.stat_add("upgrades_bought", 1)
 		update_ui()
 		_sync_upgrades()
 		_sync_core()
 		SaveManager.save_soon()
+
 		
 
 func _on_upgradeclick_2_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
 	if authority >= upgrade_click_2_cost:
 		authority -= upgrade_click_2_cost
+		Global.stat_add("authority_spent", upgrade_click_2_cost)
+
 		auth_per_click += 10
 		upgrade_click_2_level += 1
-		upgrade_click_2_cost    = _bump_cost(upgrade_click_2_cost, 1.30)
-		Global.stat_add("upgrades_bought", 1)
-		update_ui()
-		_sync_upgrades()
-		_sync_core()
-		SaveManager.save_soon()
-		
-func _on_upgradepassive_2_pressed() -> void:
-	MusicManager.play_sfx(SFX_CLICK)
-	if authority >= upgrade_passive_2_cost:
-		authority -= upgrade_passive_2_cost
-		passive_mult *= 2
-		upgrade_passive_2_level += 1
-		upgrade_passive_2_cost  = _bump_cost(upgrade_passive_2_cost, 5.00)
+		upgrade_click_2_cost = _bump_cost(upgrade_click_2_cost, 1.30)
 		Global.stat_add("upgrades_bought", 1)
 		update_ui()
 		_sync_upgrades()
 		_sync_core()
 		SaveManager.save_soon()
 
-func _on_upgradecritchance_pressed() -> void:
+		
+func _on_upgradepassive_2_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
-	if authority >= upgrade_crit_chance_cost:
-		authority -= upgrade_crit_chance_cost
-		crit_chance += .02
-		upgrade_crit_chance_level += 1
-		upgrade_crit_chance_cost= _bump_cost(upgrade_crit_chance_cost, 10.0)
+	if authority >= upgrade_passive_2_cost:
+		authority -= upgrade_passive_2_cost
+		Global.stat_add("authority_spent", upgrade_passive_2_cost)
+
+		passive_mult *= 2
+		upgrade_passive_2_level += 1
+		upgrade_passive_2_cost = _bump_cost(upgrade_passive_2_cost, 5.00)
 		Global.stat_add("upgrades_bought", 1)
 		update_ui()
 		_sync_upgrades()
 		_sync_core()
 		SaveManager.save_soon()
+
+
+func _on_upgradecritchance_pressed() -> void:
+	MusicManager.play_sfx(SFX_CLICK)
+	if authority >= upgrade_crit_chance_cost:
+		authority -= upgrade_crit_chance_cost
+		Global.stat_add("authority_spent", upgrade_crit_chance_cost)
+
+		crit_chance += .02
+		upgrade_crit_chance_level += 1
+		upgrade_crit_chance_cost = _bump_cost(upgrade_crit_chance_cost, 10.0)
+		Global.stat_add("upgrades_bought", 1)
+		update_ui()
+		_sync_upgrades()
+		_sync_core()
+		SaveManager.save_soon()
+
 		
 func _on_upgradecritmult_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
 	if authority >= upgrade_crit_mult_cost:
 		authority -= upgrade_crit_mult_cost
+		Global.stat_add("authority_spent", upgrade_crit_mult_cost)
+
 		crit_mult += 1
 		upgrade_crit_mult_level += 1
-		upgrade_crit_mult_cost  = _bump_cost(upgrade_crit_mult_cost, 10.0)
+		upgrade_crit_mult_cost = _bump_cost(upgrade_crit_mult_cost, 10.0)
 		Global.stat_add("upgrades_bought", 1)
 		update_ui()
 		_sync_upgrades()
 		_sync_core()
 		SaveManager.save_soon()
+
 
 
 
@@ -549,7 +576,7 @@ func can_prestige() -> bool:
 	return lifetime_authority >= 100000 # requires this much lifetime authority to prestige.
 	
 func calculate_bloodline_strength() -> int:
-	return int(lifetime_authority / 100000)  # 1 bloodline per 100k lifetime
+	return int(Global.lifetime_authority / 100000)  # 1 bloodline per 100k lifetime
 
 func _on_abdicate_pressed() -> void:
 	MusicManager.play_sfx(SFX_CLICK)
@@ -594,7 +621,7 @@ func _on_abdicateconfirm_confirmed():
 	#reset current stats
 	
 	Global.reset_stats_abdicate()
-	SaveManager.save_soon()
+	SaveManager.save()
 	get_tree().reload_current_scene()
 	print(total_bloodline_strength)
 	
@@ -613,3 +640,9 @@ func _on_cheat_pressed() -> void:
 	update_ui()
 	_sync_core()
 	SaveManager.save_soon()
+
+
+func _on_expansion_pressed() -> void:
+	MusicManager.play_sfx(SFX_CLICK)
+	_stamp_last_active()
+	get_tree().change_scene_to_file("res://scenes/gameplay/expansion.tscn")

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cs5umto3yi0cn"]
+[gd_scene load_steps=4 format=3 uid="uid://cs5umto3yi0cn"]
 
-[ext_resource type="Script" uid="uid://8tl4o3nq8bjr" path="res://scenes/gameplay/expansionui.gd" id="1_uvmst"]
+[ext_resource type="Script" uid="uid://8tl4o3nq8bjr" path="res://scripts/gameplay/expansionui.gd" id="1_uvmst"]
+[ext_resource type="Script" uid="uid://dqi3gkc70i1cq" path="res://scenes/gameplay/mapview.gd" id="2_ef0ck"]
+[ext_resource type="Texture2D" uid="uid://bfncmphjwg2hm" path="res://assets/art/expansionmap.png" id="2_wl6wm"]
 
 [node name="Expansion" type="Control"]
 layout_mode = 3
@@ -11,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uvmst")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="mapview" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,68 +21,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="title_label" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Expansion"
-horizontal_alignment = 1
-
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="map_wrap" type="CenterContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="map" type="Control" parent="MarginContainer/VBoxContainer/HSplitContainer/map_wrap"]
-custom_minimum_size = Vector2(640, 480)
-layout_mode = 2
-
-[node name="side" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
-custom_minimum_size = Vector2(260, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="tabs" type="TabContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/side"]
-clip_contents = true
-layout_mode = 2
-size_flags_vertical = 3
-current_tab = 0
-
-[node name="Troops" type="Control" parent="MarginContainer/VBoxContainer/HSplitContainer/side/tabs"]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="troops_label" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/side/tabs/Troops"]
-layout_mode = 1
-offset_right = 1.0
-offset_bottom = 32.0
-
-[node name="troops_desc" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/side/tabs/Troops"]
-clip_contents = false
+[node name="Map" type="TextureRect" parent="mapview"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-fit_content = true
-
-[node name="Buffs" type="Control" parent="MarginContainer/VBoxContainer/HSplitContainer/side/tabs"]
-visible = false
-layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="buffs_list" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/side/tabs/Buffs"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-fit_content = true
+mouse_filter = 0
+texture = ExtResource("2_wl6wm")
+expand_mode = 4
+stretch_mode = 5
+script = ExtResource("2_ef0ck")
 
 [node name="bottom_bar" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -96,3 +48,115 @@ text = "Menu"
 [node name="btn_game" type="Button" parent="bottom_bar"]
 layout_mode = 2
 text = "Back to Game"
+
+[node name="TabContainer" type="TabContainer" parent="."]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_bottom = 200.0
+grow_horizontal = 0
+grow_vertical = 2
+tab_alignment = 1
+current_tab = 0
+
+[node name="Troops" type="PanelContainer" parent="TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="TroopsPanel" type="VBoxContainer" parent="TabContainer/Troops"]
+layout_mode = 2
+
+[node name="HBoxContainer0" type="HBoxContainer" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="troops" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer0"]
+layout_mode = 2
+
+[node name="lbl_troops" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer0"]
+layout_mode = 2
+
+[node name="lbl_region" type="Label" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer"]
+layout_mode = 2
+text = "Cost:"
+
+[node name="lbl_cost" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="Time" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer2"]
+layout_mode = 2
+text = "Time:"
+
+[node name="lbl_time" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="Status" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer3"]
+layout_mode = 2
+text = "Status:"
+
+[node name="lbl_status" type="Label" parent="TabContainer/Troops/TroopsPanel/HBoxContainer3"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="progress" type="ProgressBar" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+
+[node name="btn_conquer" type="Button" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+text = "Conquer"
+
+[node name="btn_add_troops" type="Button" parent="TabContainer/Troops/TroopsPanel"]
+layout_mode = 2
+text = "CHEAT"
+
+[node name="Buffs" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="buffslabel" type="RichTextLabel" parent="TabContainer/Buffs"]
+layout_mode = 2
+fit_content = true
+
+[node name="Info" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="infolabel" type="RichTextLabel" parent="TabContainer/Info"]
+layout_mode = 2
+text = "This is a map of your empire. The purple area is your capital. The blue areas are neighbouring nations, while the green areas are independant city states. Send troops to conquer them and expand your empire and influence."
+fit_content = true
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 32.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 39
+text = "Expansion"
+
+[connection signal="pressed" from="bottom_bar/btn_menu" to="." method="_on_btn_menu_pressed"]
+[connection signal="pressed" from="bottom_bar/btn_game" to="." method="_on_btn_game_pressed"]

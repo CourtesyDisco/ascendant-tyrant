@@ -23,6 +23,7 @@ MusicManager="*res://scenes/misc/MusicManager.tscn"
 Global="*res://scripts/systems/global.gd"
 Numberformatter="*res://scripts/systems/numberformatter.gd"
 SaveManager="*res://scripts/systems/savemanager.gd"
+Expansion="*res://scripts/gameplay/expansion.gd"
 
 [display]
 
